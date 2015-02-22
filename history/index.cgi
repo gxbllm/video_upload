@@ -1,4 +1,3 @@
-
 #!/bin/bash
 
 echo "Content-type: text/html"
@@ -6,7 +5,7 @@ echo ""
 echo '<html>'
 echo '<head>'
 echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'
-echo '<title>Boyfriend youtube-dl history</title>'
+echo '<title>youtube-dl history</title>'
 echo '</head>'
 echo '<body>'
 
@@ -28,7 +27,7 @@ sofar=$(( $num * $page ))
 
 
 # Banner
-echo "<h1>Boyfriend YouTube Download History</h1>"
+echo "<h1>YouTube-Download History</h1>"
 
 echo '<a href="/">[Start over]</a>'
 test "$prev" != "0" && echo "[<a href='?page=$prev'>Prev page</a>]" || echo "<a>[Prev page]</a>"
@@ -47,7 +46,8 @@ fi
 while read line; do
   date="$( echo "$line" | cut -f 1)"
   link="$( echo "$line" | cut -f 2)"
-  file="$( echo "$line" | cut -f 3)"
+  thumb="$( echo "$line" | cut -f 3)"
+  file="$( echo "$line" | cut -f 4)"
 
   echo "<br><a>"
   echo "Date: $date"
@@ -55,8 +55,8 @@ while read line; do
   echo "File: $file"
   echo "</a><br>"
 
-  echo "<a>Size: $(du -sh "$PWD/$file" 2>&1)</a> <a href='/?file=$PWD/$file&start=0'>edit</a> <a href='?delete=$file'>delete</a>"
-  echo "<br><img src='$(youtube-dl --get-thumbnail --restrict-filenames "$link")' width=45%><br>"
+  echo "<a>Size: $(du -sh "$file" 2>&1) </a><a href='/?file=$PWD/$file'>edit </a><a href='?delete=$file'>delete</a>"
+  echo "<br><img src='$thumb' width=45%><br>"
 done < <(tail -n $sofar vids.log | head -n $num | tac 2>/dev/null || tail -n $sofar vids.log | head -n $num | tail -r) # Linux vs Mac
 
 echo '</body>'
