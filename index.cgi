@@ -76,18 +76,18 @@ if test "$REQUEST_METHOD" = "POST"; then
   c=${#ctype}
   a=$((a*2+b+c+d+10))
 
-  SIZE=$((HTTP_CONTENT_LENGTH-a))
-  FILE=history/upload.mp4
+  size=$((HTTP_CONTENT_LENGTH-a))
+  file="history/upload.mp4"
 
-  dd ibs=1 obs=512 count=$SIZE of="$FILE"
-  sed -i '$d' vid$file
-  sed -i '$d' vid$file
-  sed -i '$d' vid$file
-  sed -i '$d' vid$file
+  dd ibs=1 obs=512 count=$size of="$file"
+  sed -i '$d' "$file"
+  sed -i '$d' "$file"
+  sed -i '$d' "$file"
+  sed -i '$d' "$file"
 
-  echo "<a>Size: $(du -sh "$FILE" 2>&1)</a>
-  echo "<a href='/?file=$PWD/$FILE'>edit</a>"
-  echo "<br><img src='data:image/png;charset=utf-8;base64,$(ffmpeg -ss 2 -i "$FILE" -t 1 -f image2pipe -vcodec ppm - | convert - png:- | base64)' width=45%><br>"
+  echo "<a>Size: $(du -sh "$file" 2>&1)</a>
+  echo "<a href='/?file=$PWD/$file'>edit</a>"
+  echo "<br><img src='data:image/png;charset=utf-8;base64,$(ffmpeg -ss 2 -i "$file" -t 1 -f image2pipe -vcodec ppm - | convert - png:- | base64)' width=45%><br>"
 fi
 
 echo '</body>'
