@@ -1,3 +1,6 @@
 .DS_Store
 history/vids.log
+history/*.mov
+history/*.mp4
 history/*.mkv
+history/*.avi
