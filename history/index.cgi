@@ -38,7 +38,6 @@ echo "<br>"
 if test -n "$delete" && grep --silent "$delete" vids.log; then
   grep -v "$delete" vids.log >> vids.log.new
   rm -v "$delete" 2>&1
-  rm "$delete" 2>&1
   mv vids.log.new vids.log
 fi
 
@@ -49,20 +48,17 @@ while read line; do
   thumb="$( echo "$line" | cut -f 3)"
   file="$( echo "$line" | cut -f 4)"
 
-  echo "<br><a>"
-  echo "Date: $date"
-  echo "Link: <a href='$link'>$link</a>"
-  echo "File: $file"
-  echo "</a><br>"
+  echo "<br><a>Date: $date</a>"
+  echo "<br><a>Link: </a><a href='$link'>$link</a>"
 
-  echo "<a>Size: $(du -sh "$file" 2>&1) </a><a href='/?file=$PWD/$file'>edit </a><a href='?delete=$file'>delete</a>"
-
+  echo "<br><a>Size: $(du -sh "$file" 2>&1)</a>"
+  echo "<a href='/?file=$PWD/$file'>edit</a>"
+  echo "<a href='?delete=$file'>delete</a>"
   if test -z "$thumb"; then
-    echo "<br><img src='data:image/png;charset=utf-8;base64,$(ffmpeg -ss 2 -i "$FILE" -t 1 -f image2pipe -vcodec ppm - | convert - png:- | base64)' width=45%>"
+    echo "<br><img src='data:image/png;charset=utf-8;base64,$(ffmpeg -ss 2 -i "$FILE" -t 1 -f image2pipe -vcodec ppm - | convert - png:- | base64)' width=45%><br>"
   else
     echo "<br><img src='$thumb' width=45%><br>"
   fi
-
 done < <(tail -n $sofar vids.log | head -n $num | tac 2>/dev/null || tail -n $sofar vids.log | head -n $num | tail -r) # Linux vs Mac
 
 echo '</body>'
