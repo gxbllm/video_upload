@@ -1,14 +1,10 @@
 #!/bin/bash
 
-echo "Content-type: text/html"
-echo ""
-echo '<html>'
-echo '<head>'
-echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'
-echo '<title>video history</title>'
-echo '</head>'
-echo '<body>'
+# Requirements
+PATH=/usr/local/bin:$PATH # Fix PATH on OS X
+which youtube-dl 2>&1 >/dev/null
 
+# URL Parse
 IFS="&"
 for var in $QUERY_STRING; do
   declare "$var"
@@ -25,21 +21,37 @@ next=$(( $page + 1 ))
 test -z "$num" && num=10
 sofar=$(( $num * $page ))
 
+# Delete
+if test -n "$delete" && grep --silent "$delete" vids.log; then
+  grep -v "$delete" vids.log >> vids.log.new
+  rm -v "$delete"
+  mv vids.log.new vids.log
+fi
+
+
+
+
+# HTTP
+echo "Content-type: text/html"
+echo ""
+
+# HTML
+echo '<html>'
+echo '<head>'
+echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'
+echo '<title>video history</title>'
+echo '</head>'
+echo '<body>'
 
 # Banner
 echo "<h1>Video History</h1>"
 
-echo '<a href="../">[Start over]</a>'
+# Menu
+echo "<a href='/'>[Start over]</a>"
 test "$prev" != "0" && echo "[<a href='?page=$prev'>Prev page</a>]" || echo "<a>[Prev page]</a>"
 test $(wc -l < vids.log) -gt $sofar && echo "[<a href='?page=$next'>Next page</a>]" || echo "<a>[Next page]</a>" # wc cant be trusted with an actual file argument because there is no way to stop printing its name
 echo "<br>"
 
-# Delete
-if test -n "$delete" && grep --silent "$delete" vids.log; then
-  grep -v "$delete" vids.log >> vids.log.new
-  rm -v "$delete" 2>&1
-  mv vids.log.new vids.log
-fi
 
 # Output
 while read line; do
