@@ -50,7 +50,6 @@ echo "<h1>Video History</h1>"
 echo "<a href='/'>[Start over]</a>"
 test "$prev" != "0" && echo "[<a href='?page=$prev'>Prev page</a>]" || echo "<a>[Prev page]</a>"
 test $(wc -l < vids.log) -gt $sofar && echo "[<a href='?page=$next'>Next page</a>]" || echo "<a>[Next page]</a>" # wc cant be trusted with an actual file argument because there is no way to stop printing its name
-echo "<br>"
 
 
 # Output
@@ -60,17 +59,19 @@ while read line; do
   thumb="$( echo "$line" | cut -f 3)"
   file="$( echo "$line" | cut -f 4)"
 
-  echo "<br><a>Date: $date</a>"
-  echo "<br><a>Link: </a><a href='$link'>$link</a>"
+  echo "<h5>"
+  echo "<a>Date: $date</a><br>"
+  echo "<a>Link: </a><a href='$link'>$link</a><br>"
 
-  echo "<br><a>Size: $(du -sh "$file" 2>&1)</a>"
+  echo "<a>Size: $(du -sh "$file" 2>&1)</a>"
   echo "<a href='/?file=$PWD/$file'>edit</a>"
-  echo "<a href='?delete=$file'>delete</a>"
+  echo "<a href='?delete=$file'>delete</a><br>"
   if test -z "$thumb"; then
-    echo "<br><img src='data:image/png;charset=utf-8;base64,$(ffmpeg -ss 2 -i "$FILE" -t 1 -f image2pipe -vcodec ppm - | convert - png:- | base64)' width=45%><br>"
+    echo "<img src='data:image/png;charset=utf-8;base64,$(ffmpeg -ss 2 -i "$FILE" -t 1 -f image2pipe -vcodec ppm - | convert - png:- | base64)' width=45%><br>"
   else
-    echo "<br><img src='$thumb' width=45%><br>"
+    echo "<img src='$thumb' width=45%><br>"
   fi
+  echo "</h5>"
 done < <(tail -n $sofar vids.log | head -n $num | tac 2>/dev/null || tail -n $sofar vids.log | head -n $num | tail -r) # Linux vs Mac
 
 echo '</body>'

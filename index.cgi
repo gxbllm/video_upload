@@ -38,9 +38,9 @@ upload_file() {
   a=$((a*2+b+c+d+10))
 
   size=$((HTTP_CONTENT_LENGTH-a))
-  file="history/upload.mp4"
+  file="upload.mp4"
 
-  dd ibs=1 obs=512 count=$size of="$file"
+  dd ibs=1 obs=512 count=$size of="history/$file"
   sed -i '$d' "$file"
   sed -i '$d' "$file"
   sed -i '$d' "$file"
@@ -59,6 +59,11 @@ echo '<html>'
 echo '<head>'
 echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'
 echo '<title>video upload</title>'
+echo "<style>
+pre {
+    font-size: 5px;
+}
+</style>"
 echo '</head>'
 echo '<body>'
 
@@ -84,30 +89,22 @@ echo "</form>"
 
 
 # Output
-echo "<pre>"
-
-# Download
-if test -n "$youtube" -a ! -f "history/$file"; then
-  download_file
-
-else
-  # Upload
-  if test "$REQUEST_METHOD" = "POST"; then
-    upload_file
-
-    echo "<a>Size: $(du -sh "$file" 2>&1)</a>"
-    echo "<a href='/?file=$PWD/$file'>edit</a><br>"
-    echo "<img src='data:image/png;charset=utf-8;base64,$(ffmpeg -ss 2 -i "$file" -t 1 -f image2pipe -vcodec ppm - | convert - png:- | base64)' width=45%><br>"
-  fi
+if test ! -f "history/$file"; then
+  echo "<pre>"
+  test -n "$youtube" && download_file
+  test "$REQUEST_METHOD" = "POST" && upload_file
+  echo "</pre>"
 fi
 
-echo "</pre>"
-
-
-# Info
-echo "<a>Size: $(du -sh "history/$file" 2>&1)</a>"
-echo "<a href='/?file=$PWD/history/$file'>edit</a><br>"
-echo "<img src='$thumb' width=45%><br>"
+if test -f "history/$file"; then
+  # Info
+  echo "<h5>"
+  echo "<a>Size: $(du -sh "history/$file" 2>&1)</a>"
+  echo "<a href='/?file=$PWD/history/$file'>edit</a><br>"
+  echo "<img src='$thumb' width=45%><br>"
+  #echo "<img src='data:image/png;charset=utf-8;base64,$(ffmpeg -ss 2 -i "$file" -t 1 -f image2pipe -vcodec ppm - | convert - png:- | base64)' width=45%><br>"
+  echo "</h5>"
+fi
 
 
 echo '</body>'
