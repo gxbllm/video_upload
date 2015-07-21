@@ -64,8 +64,8 @@ while read line; do
   echo "<a>Link: </a><a href='$link'>$link</a><br>"
 
   echo "<a>Size: $(du -sh "$file" 2>&1)</a>"
-  echo "<a href='/?file=$PWD/$file'>edit</a>"
-  echo "<a href='?delete=$file'>delete</a><br>"
+  echo "<a href='../../?file=$PWD/$file'>edit</a>"
+  echo "<a href='./?delete=$file'>delete</a><br>"
   if test -z "$thumb"; then
     echo "<img src='data:image/png;charset=utf-8;base64,$(ffmpeg -ss 2 -i "$FILE" -t 1 -f image2pipe -vcodec ppm - | convert - png:- | base64)' width=45%><br>"
   else
