@@ -2,7 +2,7 @@
 
 # Requirements
 PATH=/usr/local/bin:$PATH # Fix PATH on OS X
-which youtube-dl 2>&1 >/dev/null
+which video-dl 2>&1 >/dev/null
 
 # URL Parse
 IFS="&"
@@ -11,18 +11,18 @@ for var in $QUERY_STRING; do
 done
 
 # URL Decode: Replace %NN with \xNN and pass the lot to printf -b, which will decode hex
-test -n "$youtube" && printf -v youtube '%b' "${youtube//%/\\x}"
+test -n "$video" && printf -v video '%b' "${video//%/\\x}"
 
 # Vars (after decode)
-if test -n "$youtube"; then
-  file="$(youtube-dl --get-filename --restrict-filenames "$youtube" 2>/dev/null)"
-  thumb="$(youtube-dl --get-thumbnail --restrict-filenames "$youtube" 2>/dev/null)"
+if test -n "$video"; then
+  file="$(video-dl --get-filename --restrict-filenames "$video" 2>/dev/null)"
+  thumb="$(video-dl --get-thumbnail --restrict-filenames "$video" 2>/dev/null)"
 fi
 
 # Functions
 download_file() {
-  youtube-dl --restrict-filenames -o "history/$file" "$youtube" 2>&1
-  test $? = 0 && printf "%s\t%s\t%s\t%s\n" "$(date)" "$youtube" "$thumb" "$file" >> history/vids.log
+  video-dl --restrict-filenames -o "history/$file" "$video" 2>&1
+  test $? = 0 && printf "%s\t%s\t%s\t%s\n" "$(date)" "$video" "$thumb" "$file" >> history/vids.log
 }
 
 upload_file() {
@@ -76,8 +76,8 @@ echo '[<a href="./history">Video History</a>]'
 
 # Input
 echo "<form method=GET action=\"${SCRIPT}\">"
-echo "<label for='youtube'>YouTube Link: </label>"
-echo "<input type='text' name='youtube' size=45 value=''>"
+echo "<label for='video'>Video Link (<a href='https://rg3.github.io/youtube-dl/supportedsites.html'>sites</a>): </label>"
+echo "<input type='text' name='video' size=45 value=''>"
 echo "<br><input type='submit' value='Process'>"
 echo "</form>"
 
@@ -91,7 +91,7 @@ echo "</form>"
 # Output
 if test ! -f "history/$file"; then
   echo "<pre>"
-  test -n "$youtube" && download_file
+  test -n "$video" && download_file
   test "$REQUEST_METHOD" = "POST" && upload_file
   echo "</pre>"
 fi
