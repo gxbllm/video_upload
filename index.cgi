@@ -15,8 +15,8 @@ test -n "$youtube" && printf -v youtube '%b' "${youtube//%/\\x}"
 
 # Vars (after decode)
 if test -n "$youtube"; then
-  file="$(youtube-dl --get-filename --restrict-filenames "$youtube")"
-  thumb="$(youtube-dl --get-thumbnail --restrict-filenames "$youtube")"
+  file="$(youtube-dl --get-filename --restrict-filenames "$youtube" 2>/dev/null)"
+  thumb="$(youtube-dl --get-thumbnail --restrict-filenames "$youtube" 2>/dev/null)"
 fi
 
 # Functions
