@@ -71,7 +71,7 @@ echo '<body>'
 echo "<h1>Video Upload</h1>"
 
 # Menu
-echo '[<a href="../">Start over</a>]'
+echo '[<a href="../">Go back</a>]'
 echo '[<a href="./history">Video History</a>]'
 
 # Input
