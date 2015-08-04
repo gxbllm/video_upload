@@ -2,7 +2,7 @@
 
 # Requirements
 PATH=/usr/local/bin:$PATH # Fix PATH on OS X
-which video-dl 2>&1 >/dev/null
+which youtube-dl 2>&1 >/dev/null
 
 # URL Parse
 IFS="&"
@@ -15,13 +15,13 @@ test -n "$video" && printf -v video '%b' "${video//%/\\x}"
 
 # Vars (after decode)
 if test -n "$video"; then
-  file="$(video-dl --get-filename --restrict-filenames "$video" 2>/dev/null)"
-  thumb="$(video-dl --get-thumbnail --restrict-filenames "$video" 2>/dev/null)"
+  file="$(youtube-dl --get-filename --restrict-filenames "$video" 2>/dev/null)"
+  thumb="$(youtube-dl --get-thumbnail --restrict-filenames "$video" 2>/dev/null)"
 fi
 
 # Functions
 download_file() {
-  video-dl --restrict-filenames -o "history/$file" "$video" 2>&1
+  youtube-dl --restrict-filenames -o "history/$file" "$video" 2>&1
   test $? = 0 && printf "%s\t%s\t%s\t%s\n" "$(date)" "$video" "$thumb" "$file" >> history/vids.log
 }
 
