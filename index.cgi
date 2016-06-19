@@ -17,13 +17,12 @@ VIDEO_QUALITY=160
 
 # Functions
 download_file() {
-  file="$(youtube-dl --get-filename --restrict-filenames -o '%(title)s-%(id)s.%(ext)s' '$video' 2>>youtube-dl.log)"
-  echo "$file" >>youtube-dl.log
-  thumb="$(youtube-dl --get-thumbnail --restrict-filenames '$video' 2>>youtube-dl.log)"
-  echo "$thumb" >>youtube-dl.log
+  file="$( youtube-dl --get-filename --restrict-filenames -o '%(title)s-%(id)s.%(ext)s' "$video" 2>&1 )"
+  thumb="$( youtube-dl --get-thumbnail --restrict-filenames "$video" 2>&1 )"
+  thumb="${file%%.*}.${thumb##*.}"
 
   youtube-dl -f $VIDEO_QUALITY --write-thumbnail --no-playlist --restrict-filenames -o "history/$file" "$video" 2>&1
-  printf "%s\t%s\t%s\t%s\n" "$(date)" "$video" "$thumb" "$file" >> history/vids.log
+  test $? = 0 && printf "%s\t%s\t%s\t%s\n" "$(date)" "$video" "$thumb" "$file" >> history/vids.log
 }
 
 upload_file() {
@@ -77,7 +76,7 @@ echo '[<a href="history/">Video History</a>]'
 
 # Input
 echo "<form method=GET action=\"${SCRIPT}\">"
-echo "<label for='video'>Video Link (<a href='https://rg3.github.io/youtube-dl/supportedsites.html'>sites</a>): </label>"
+echo "<label for='video'>Video Link (<a href='https://rg3.github.io/youtube-dl/supportedsites.html' target='_blank'>sites</a>): </label>"
 echo "<input type='text' name='video' size=45 value=''>"
 echo "<br><input type='submit' value='Process'>"
 echo "</form>"
