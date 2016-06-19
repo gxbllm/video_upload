@@ -4,3 +4,6 @@ history/*.mov
 history/*.mp4
 history/*.mkv
 history/*.avi
+history/*.jpg
+history/*.jpeg
+history/*.png

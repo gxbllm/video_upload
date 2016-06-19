@@ -47,7 +47,7 @@ echo '<body>'
 echo "<h1>Video History</h1>"
 
 # Menu
-echo "<a href='../'>[Go back]</a>"
+echo "[<a href='../'>Go back</a>]"
 test "$prev" != "0" && echo "[<a href='?page=$prev'>Prev page</a>]" || echo "<a>[Prev page]</a>"
 test $(wc -l < vids.log) -gt $sofar && echo "[<a href='?page=$next'>Next page</a>]" || echo "<a>[Next page]</a>" # wc cant be trusted with an actual file argument because there is no way to stop printing its name
 

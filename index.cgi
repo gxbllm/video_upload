@@ -13,16 +13,17 @@ done
 # URL Decode: Replace %NN with \xNN and pass the lot to printf -b, which will decode hex
 test -n "$video" && printf -v video '%b' "${video//%/\\x}"
 
-# Vars (after decode)
-if test -n "$video"; then
-  file="$(youtube-dl --get-filename --restrict-filenames "$video" 2>/dev/null)"
-  thumb="$(youtube-dl --get-thumbnail --restrict-filenames "$video" 2>/dev/null)"
-fi
+VIDEO_QUALITY=160
 
 # Functions
 download_file() {
-  youtube-dl --restrict-filenames -o "history/$file" "$video" 2>&1
-  test $? = 0 && printf "%s\t%s\t%s\t%s\n" "$(date)" "$video" "$thumb" "$file" >> history/vids.log
+  file="$(youtube-dl --get-filename --restrict-filenames -o '%(title)s-%(id)s.%(ext)s' '$video' 2>>youtube-dl.log)"
+  echo "$file" >>youtube-dl.log
+  thumb="$(youtube-dl --get-thumbnail --restrict-filenames '$video' 2>>youtube-dl.log)"
+  echo "$thumb" >>youtube-dl.log
+
+  youtube-dl -f $VIDEO_QUALITY --write-thumbnail --no-playlist --restrict-filenames -o "history/$file" "$video" 2>&1
+  printf "%s\t%s\t%s\t%s\n" "$(date)" "$video" "$thumb" "$file" >> history/vids.log
 }
 
 upload_file() {
@@ -38,7 +39,7 @@ upload_file() {
   a=$((a*2+b+c+d+10))
 
   size=$((HTTP_CONTENT_LENGTH-a))
-  file="upload.mp4"
+  file="upload_$(date +%F-%H-%M-%S).mp4"
 
   dd ibs=1 obs=512 count=$size of="history/$file"
   sed -i '$d' "$file"
@@ -72,7 +73,7 @@ echo "<h1>Video Upload</h1>"
 
 # Menu
 echo '[<a href="../">Go back</a>]'
-echo '[<a href="./history">Video History</a>]'
+echo '[<a href="history/">Video History</a>]'
 
 # Input
 echo "<form method=GET action=\"${SCRIPT}\">"
