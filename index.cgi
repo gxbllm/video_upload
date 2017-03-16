@@ -101,7 +101,7 @@ if test -f "history/$file"; then
   echo "<h5>"
   echo "<a>Size: $(du -sh "history/$file" 2>&1)</a>"
   echo "<a href='../?file=$PWD/history/$file'>edit</a><br>"
-  echo "<img src='$thumb' width=45%><br>"
+  echo "<img src='history/$thumb' width=45%><br>"
   #echo "<img src='data:image/png;charset=utf-8;base64,$(ffmpeg -ss 2 -i "$file" -t 1 -f image2pipe -vcodec ppm - | convert - png:- | base64)' width=45%><br>"
   echo "</h5>"
 fi
