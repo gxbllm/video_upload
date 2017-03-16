@@ -19,7 +19,7 @@ VIDEO_QUALITY=160
 download_file() {
   file="$( youtube-dl --get-filename --restrict-filenames -o '%(title)s-%(id)s.%(ext)s' "$video" 2>&1 )"
   thumb="$( youtube-dl --get-thumbnail --restrict-filenames "$video" 2>&1 )"
-  thumb="${file%%.*}.${thumb##*.}"
+  thumb="${file%.*}.${thumb##*.}"
 
   youtube-dl -f $VIDEO_QUALITY --write-thumbnail --no-playlist --restrict-filenames -o "history/$file" "$video" 2>&1
   test $? = 0 && printf "%s\t%s\t%s\t%s\n" "$(date)" "$video" "$thumb" "$file" >> history/vids.log
