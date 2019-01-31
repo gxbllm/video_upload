@@ -1,14 +1,21 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 # Requirements
 PATH=/usr/local/bin:$PATH # Fix PATH on OS X
 which youtube-dl 2>&1 >/dev/null
 
 # URL Parse
+test -z "${QUERY_STRING}" && QUERY_STRING="$( echo $2 | cut -d? -f2 -s)"
+test -z "${location}" && location="$( echo $2 | cut -d? -f1)"
+
+cd ./${location}
+
+oldIFS="$IFS"
 IFS="&"
 for var in $QUERY_STRING; do
   declare "$var"
 done
+IFS="$oldIFS"
 
 # URL Decode: Replace %NN with \xNN and pass the lot to printf -b, which will decode hex
 test -n "$video" && printf -v video '%b' "${video//%/\\x}"
@@ -17,11 +24,11 @@ VIDEO_QUALITY=160
 
 # Functions
 download_file() {
-  file="$( youtube-dl --get-filename --restrict-filenames -o '%(title)s-%(id)s.%(ext)s' "$video" 2>&1 )"
-  thumb="$( youtube-dl --get-thumbnail --restrict-filenames "$video" 2>&1 )"
+  file="$( youtube-dl --get-filename --restrict-filenames -o '%(title)s-%(id)s.%(ext)s' "$video" )"
+  thumb="$( youtube-dl --get-thumbnail --restrict-filenames "$video" )"
   thumb="${file%.*}.${thumb##*.}"
 
-  youtube-dl -f $VIDEO_QUALITY --write-thumbnail --no-playlist --restrict-filenames -o "history/$file" "$video" 2>&1
+  youtube-dl -f $VIDEO_QUALITY --write-thumbnail --no-playlist -o "history/$file" "$video"
   test $? = 0 && printf "%s\t%s\t%s\t%s\n" "$(date)" "$video" "$thumb" "$file" >> history/vids.log
 }
 
@@ -51,8 +58,8 @@ upload_file() {
 
 
 # HTTP
-echo "Content-type: text/html"
-echo ""
+#echo "Content-type: text/html"
+#echo ""
 
 # HTML
 echo '<html>'

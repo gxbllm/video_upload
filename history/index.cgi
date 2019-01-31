@@ -1,14 +1,21 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 # Requirements
 PATH=/usr/local/bin:$PATH # Fix PATH on OS X
 which youtube-dl 2>&1 >/dev/null
 
 # URL Parse
+test -z "${QUERY_STRING}" && QUERY_STRING="$( echo $2 | cut -d? -f2 -s)"
+test -z "${location}" && location="$( echo $2 | cut -d? -f1)"
+
+cd ./${location}
+
+oldIFS="$IFS"
 IFS="&"
 for var in $QUERY_STRING; do
   declare "$var"
 done
+IFS="$oldIFS"
 
 # URL Decode: Replace %NN with \xNN and pass the lot to printf -b, which will decode hex
 test -n "$delete" && printf -v delete '%b' "${delete//%/\\x}"
@@ -22,7 +29,7 @@ test -z "$num" && num=10
 sofar=$(( $num * $page ))
 
 # Delete
-if test -n "$delete" && grep --silent "$delete" vids.log; then
+if test -n "$delete" && grep -s "$delete" vids.log; then
   grep -v "$delete" vids.log >> vids.log.new
   rm -v "$delete"
   mv vids.log.new vids.log
@@ -32,8 +39,8 @@ fi
 
 
 # HTTP
-echo "Content-type: text/html"
-echo ""
+#echo "Content-type: text/html"
+#echo ""
 
 # HTML
 echo '<html>'
