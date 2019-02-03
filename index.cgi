@@ -73,6 +73,7 @@ pre {
 </style>"
 echo '</head>'
 echo '<body>'
+echo '<article>'
 
 # Banner
 echo "<h1>Video Upload</h1>"
@@ -114,5 +115,6 @@ if test -f "history/$file"; then
 fi
 
 
+echo '</article>'
 echo '</body>'
 echo '</html>'

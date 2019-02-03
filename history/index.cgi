@@ -49,6 +49,7 @@ echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'
 echo '<title>video history</title>'
 echo '</head>'
 echo '<body>'
+echo '<article>'
 
 # Banner
 echo "<h1>Video History</h1>"
@@ -81,5 +82,6 @@ while read line; do
   echo "</h5>"
 done < <(tail -n $sofar vids.log | head -n $num | tac 2>/dev/null || tail -n $sofar vids.log | head -n $num | tail -r) # Linux vs Mac
 
+echo '</article>'
 echo '</body>'
 echo '</html>'
