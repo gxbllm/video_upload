@@ -58,8 +58,8 @@ upload_file() {
 
 
 # HTTP
-#echo "Content-type: text/html"
-#echo ""
+echo "Content-type: text/html"
+echo ""
 
 # HTML
 echo '<html>'
